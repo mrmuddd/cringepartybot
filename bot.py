@@ -31,7 +31,7 @@ def buttons(msg):
         url = 'https://newsapi.org/v2/top-headlines?country=ru&apiKey=c86169d8dfb14848a46619b9f6d4006a'
         response = r.get(url)
         data = response.json()
-        for i in range(5):
+        for i in range(10):
             message += format(str(data['articles'][i]['title']) + '\n' + '\n')
         bot.reply_to(msg, message)
 
