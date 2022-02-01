@@ -1,12 +1,10 @@
-from random import choice
-from glob import glob
 import telebot
 from telebot import types
+from random import choice
+from glob import glob
 import requests as r
 
 KEY = '5126890620:AAEw-CztNB-4rldEnhO9MVrUfXafHZvSWVQ'
-NEWS_KEY = 'c86169d8dfb14848a46619b9f6d4006a'
-
 bot = telebot.TeleBot(KEY)
 
 
@@ -32,23 +30,15 @@ def buttons(msg):
         response = r.get(url)
         data = response.json()
         for i in range(20):
-            message += format(str(data['articles'][i]['title']) + '\n' + '\n')
+            message += str(data['articles'][i]['title']) + '\n' + '\n'
         bot.reply_to(msg, message)
 
-    if msg.text == 'Пополнить словарный запас':                                       # enrichment
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1 = types.KeyboardButton('A snapchat pic')
-        item2 = types.KeyboardButton('Quaaludes')
-        item3 = types.KeyboardButton('Вернуться назад')
-        markup.add(item1)
-        markup.add(item2)
-        markup.add(item3)
-        bot.send_message(msg.chat.id, 'Ну давай, выбирай :)', reply_markup=markup)
-
-    if msg.text == 'A snapchat pic':
-        bot.send_message(msg.chat.id, 'https://youtu.be/ll5xceTACEI')
-    elif msg.text == 'Quaaludes':
-        bot.send_message(msg.chat.id, 'https://youtu.be/IG2JF0P4GFA')
+    if msg.text == 'Пополнить словарный запас':                                    # enrichment
+        f = open('word.txt')
+        lines = f.readlines()
+        url = choice(lines)
+        bot.send_message(msg.chat.id, url)
+        f.close()
 
     if msg.text == 'Покажи панков':                                                 # punks
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -80,7 +70,9 @@ def buttons(msg):
     if msg.text == 'Покажи хряка':                                                          # PIGGIE
         pigs = glob('imgs/*')
         pig = choice(pigs)
-        bot.send_photo(msg.chat.id, open(pig, 'rb'))
+        f = open(pig, 'rb')
+        bot.send_photo(msg.chat.id, f)
+        f.close()
 
     if msg.text == 'Вернуться назад':
         start(msg)
