@@ -1,10 +1,11 @@
-import telebot
-from telebot import types
 from random import choice
 from glob import glob
+import telebot
+from telebot import types
 import requests as r
 
 KEY = '5126890620:AAEw-CztNB-4rldEnhO9MVrUfXafHZvSWVQ'
+
 bot = telebot.TeleBot(KEY)
 
 
@@ -25,12 +26,13 @@ def start(msg):
 @bot.message_handler(content_types='text')                                               # news
 def buttons(msg):
     if msg.text == 'Покажи новости':
-        message = ''
+        dot = '\u25CF'
+        message = 'Главные новости на сегодня:' + '\n' * 2
         url = 'https://newsapi.org/v2/top-headlines?country=ru&apiKey=c86169d8dfb14848a46619b9f6d4006a'
         response = r.get(url)
         data = response.json()
         for i in range(20):
-            message += str(data['articles'][i]['title']) + '\n' + '\n'
+            message += f"{dot} {data['articles'][i]['title']}" + '\n' * 2
         bot.reply_to(msg, message)
 
     if msg.text == 'Пополнить словарный запас':                                    # enrichment
