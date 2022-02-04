@@ -13,13 +13,15 @@ bot = telebot.TeleBot(KEY)
 def start(msg):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton('Покажи новости')
-    item2 = types.KeyboardButton('Пополнить словарный запас')
-    item3 = types.KeyboardButton('Покажи хряка')
-    item4 = types.KeyboardButton('Покажи панков')
+    item2 = types.KeyboardButton('Покажи курсы валют')
+    item3 = types.KeyboardButton('Пополнить словарный запас')
+    item4 = types.KeyboardButton('Покажи хряка')
+    item5 = types.KeyboardButton('Покажи панков')
     markup.add(item1)
     markup.add(item2)
     markup.add(item3)
     markup.add(item4)
+    markup.add(item5)
     bot.send_message(msg.chat.id, 'Что хочешь?', reply_markup=markup)
 
 
@@ -32,8 +34,23 @@ def buttons(msg):
         response = r.get(url)
         data = response.json()
         for i in range(20):
-            message += f"{dot} {data['articles'][i]['title']}" + '\n' * 2
+            message += f"{dot} {data['articles'][i]['title']}\n{data['articles'][i]['url']}" + '\n' * 2
         bot.reply_to(msg, message)
+
+    if msg.text == 'Покажи курсы валют':                                                         # currencies
+        GBP = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/GBP'
+        EUR = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/EUR'
+        USD = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/USD'
+        gbp = r.get(GBP)
+        eur = r.get(EUR)
+        usd = r.get(USD)
+        dataGBP = gbp.json()
+        dataEUR = eur.json()
+        dataUSD = usd.json()
+        rep = f"1 USD = {dataUSD['conversion_rates']['RUB']} RUB" + '\n' \
+              f"1 EUR = {dataEUR['conversion_rates']['RUB']} RUB" + '\n' \
+              f"1 GBP = {dataGBP['conversion_rates']['RUB']} RUB"
+        bot.reply_to(msg, rep)
 
     if msg.text == 'Пополнить словарный запас':                                    # enrichment
         f = open('word.txt')
