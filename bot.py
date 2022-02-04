@@ -13,15 +13,17 @@ bot = telebot.TeleBot(KEY)
 def start(msg):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton('Покажи новости')
-    item2 = types.KeyboardButton('Покажи курсы валют')
-    item3 = types.KeyboardButton('Пополнить словарный запас')
-    item4 = types.KeyboardButton('Покажи хряка')
-    item5 = types.KeyboardButton('Покажи панков')
+    item2 = types.KeyboardButton('Покажи погоду')
+    item3 = types.KeyboardButton('Покажи курсы валют')
+    item4 = types.KeyboardButton('Пополнить словарный запас')
+    item5 = types.KeyboardButton('Покажи хряка')
+    item6 = types.KeyboardButton('Покажи панков')
     markup.add(item1)
     markup.add(item2)
     markup.add(item3)
     markup.add(item4)
     markup.add(item5)
+    markup.add(item6)
     bot.send_message(msg.chat.id, 'Что хочешь?', reply_markup=markup)
 
 
@@ -35,6 +37,26 @@ def buttons(msg):
         data = response.json()
         for i in range(20):
             message += f"{dot} {data['articles'][i]['title']}\n{data['articles'][i]['url']}" + '\n' * 2
+        bot.reply_to(msg, message)
+
+    if msg.text == 'Покажи погоду':                                                  # weather
+        bot.reply_to(msg, 'Напиши название населенного пункта')
+    else:
+        coordURL = f"http://api.openweathermap.org/geo/1.0/direct?q={str(msg.text)}&limit=5&appid=2dd9ea7ad178166dee8752723832cd70"
+        coordRESPONSE = r.get(coordURL)
+        coordDATA = coordRESPONSE.json()
+        lat = f"{coordDATA[0]['lat']}"
+        lon = f"{coordDATA[0]['lon']}"
+        weatherURL = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&lang=ru&appid=2dd9ea7ad178166dee8752723832cd70"
+        weatherRESPONSE = r.get(weatherURL)
+        weatherDATA = weatherRESPONSE.json()
+        message = f"Сейчас на улице:" + '\n' * 2\
+                + f"{weatherDATA['weather'][0]['description']}" + '\n'\
+                + f"Температура: {weatherDATA['main']['temp']}" + '\n'\
+                + f"Ощущается как: {weatherDATA['main']['feels_like']}" + '\n'\
+                + f"Мин: {weatherDATA['main']['temp_min']}" + '\n'\
+                + f"Макс: {weatherDATA['main']['temp_max']}" + '\n'\
+                + f"Влажность: {weatherDATA['main']['humidity']}%" '\n'
         bot.reply_to(msg, message)
 
     if msg.text == 'Покажи курсы валют':                                                         # currencies
@@ -77,13 +99,13 @@ def buttons(msg):
 
     if msg.text == 'Услада для ушей':
         bot.send_message(msg.chat.id, 'https://vm.tiktok.com/ZSeg5Xvsa/')
-    elif msg.text == 'Крутая репетиция':
+    if msg.text == 'Крутая репетиция':
         bot.send_message(msg.chat.id, 'https://vm.tiktok.com/ZSeg5yBmr/')
-    elif msg.text == 'Крутые соседи':
+    if msg.text == 'Крутые соседи':
         bot.send_message(msg.chat.id, 'https://vm.tiktok.com/ZSeg5DdWn/')
-    elif msg.text == 'С новым годом!!!':
+    if msg.text == 'С новым годом!!!':
         bot.send_message(msg.chat.id, 'https://vm.tiktok.com/ZSeg5yGR7/')
-    elif msg.text == 'Замерзшие пельмени куда-то едут под дикие оры панков':
+    if msg.text == 'Замерзшие пельмени куда-то едут под дикие оры панков':
         bot.send_message(msg.chat.id, 'https://vm.tiktok.com/ZSegm63pF/')
 
     if msg.text == 'Покажи хряка':                                                          # PIGGIE
