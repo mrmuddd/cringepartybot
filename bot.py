@@ -57,6 +57,7 @@ def buttons(msg):
                 + f"Мин: {weatherDATA['main']['temp_min']}" + '\n'\
                 + f"Макс: {weatherDATA['main']['temp_max']}" + '\n'\
                 + f"Влажность: {weatherDATA['main']['humidity']}%" '\n'
+        bot.send_location(msg.chat.id, float(lat), float(lon))
         bot.reply_to(msg, message)
 
     if msg.text == 'Покажи курсы валют':                                                         # currencies
