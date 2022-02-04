@@ -9,7 +9,7 @@ KEY = '5126890620:AAEw-CztNB-4rldEnhO9MVrUfXafHZvSWVQ'
 bot = telebot.TeleBot(KEY)
 
 
-@bot.message_handler(commands=['start'])                                         # the main menu
+@bot.message_handler(commands=['start'])  # the main menu
 def start(msg):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton('Покажи новости')
@@ -27,7 +27,7 @@ def start(msg):
     bot.send_message(msg.chat.id, 'Что хочешь?', reply_markup=markup)
 
 
-@bot.message_handler(content_types='text')                                               # news
+@bot.message_handler(content_types='text')  # news
 def buttons(msg):
     if msg.text == 'Покажи новости':
         dot = '\u25CF'
@@ -39,9 +39,19 @@ def buttons(msg):
             message += f"{dot} {data['articles'][i]['title']}\n{data['articles'][i]['url']}" + '\n' * 2
         bot.reply_to(msg, message)
 
-    if msg.text == 'Покажи погоду':                                                  # weather
+    if msg.text == 'Покажи погоду':  # weather
         bot.reply_to(msg, 'Напиши название населенного пункта')
-    else:
+    elif msg.text != 'Покажи новости' and \
+            msg.text != 'Покажи курсы валют' and \
+            msg.text != 'Пополнить словарный запас' and \
+            msg.text != 'Покажи хряка' and \
+            msg.text != 'Покажи панков' and \
+            msg.text != 'Услада для ушей' and \
+            msg.text != 'Крутая репетиция' and \
+            msg.text != 'Крутые соседи' and \
+            msg.text != 'С новым годом!!!' and \
+            msg.text != 'Замерзшие пельмени куда-то едут под дикие оры панков' and \
+            msg.text != 'Вернуться назад':
         coordURL = f"http://api.openweathermap.org/geo/1.0/direct?q={str(msg.text)}&limit=5&appid=2dd9ea7ad178166dee8752723832cd70"
         coordRESPONSE = r.get(coordURL)
         coordDATA = coordRESPONSE.json()
@@ -50,17 +60,17 @@ def buttons(msg):
         weatherURL = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&lang=ru&appid=2dd9ea7ad178166dee8752723832cd70"
         weatherRESPONSE = r.get(weatherURL)
         weatherDATA = weatherRESPONSE.json()
-        message = f"Сейчас на улице:" + '\n' * 2\
-                + f"{weatherDATA['weather'][0]['description']}" + '\n'\
-                + f"Температура: {weatherDATA['main']['temp']}" + '\n'\
-                + f"Ощущается как: {weatherDATA['main']['feels_like']}" + '\n'\
-                + f"Мин: {weatherDATA['main']['temp_min']}" + '\n'\
-                + f"Макс: {weatherDATA['main']['temp_max']}" + '\n'\
-                + f"Влажность: {weatherDATA['main']['humidity']}%" '\n'
+        message = f"Сейчас на улице:" + '\n' * 2 \
+                  + f"{weatherDATA['weather'][0]['description']}" + '\n' \
+                  + f"Температура: {weatherDATA['main']['temp']}" + '\n' \
+                  + f"Ощущается как: {weatherDATA['main']['feels_like']}" + '\n' \
+                  + f"Мин: {weatherDATA['main']['temp_min']}" + '\n' \
+                  + f"Макс: {weatherDATA['main']['temp_max']}" + '\n' \
+                  + f"Влажность: {weatherDATA['main']['humidity']}%" '\n'
         bot.send_location(msg.chat.id, float(lat), float(lon))
         bot.reply_to(msg, message)
 
-    if msg.text == 'Покажи курсы валют':                                                         # currencies
+    if msg.text == 'Покажи курсы валют':                                                     # currencies
         GBP = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/GBP'
         EUR = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/EUR'
         USD = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/USD'
@@ -75,14 +85,14 @@ def buttons(msg):
               f"1 GBP = {dataGBP['conversion_rates']['RUB']} RUB"
         bot.reply_to(msg, rep)
 
-    if msg.text == 'Пополнить словарный запас':                                    # enrichment
+    if msg.text == 'Пополнить словарный запас':                                     # enrichment
         f = open('word.txt')
         lines = f.readlines()
         url = choice(lines)
         bot.send_message(msg.chat.id, url)
         f.close()
 
-    if msg.text == 'Покажи панков':                                                 # punks
+    if msg.text == 'Покажи панков':                                                   # punks
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item1 = types.KeyboardButton('Услада для ушей')
         item2 = types.KeyboardButton('Крутая репетиция')
@@ -109,7 +119,7 @@ def buttons(msg):
     if msg.text == 'Замерзшие пельмени куда-то едут под дикие оры панков':
         bot.send_message(msg.chat.id, 'https://vm.tiktok.com/ZSegm63pF/')
 
-    if msg.text == 'Покажи хряка':                                                          # PIGGIE
+    if msg.text == 'Покажи хряка':                                                # PIGGIE
         pigs = glob('imgs/*')
         pig = choice(pigs)
         f = open(pig, 'rb')
