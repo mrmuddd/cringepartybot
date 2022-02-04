@@ -9,7 +9,7 @@ KEY = '5126890620:AAEw-CztNB-4rldEnhO9MVrUfXafHZvSWVQ'
 bot = telebot.TeleBot(KEY)
 
 
-@bot.message_handler(commands=['start'])  # the main menu
+@bot.message_handler(commands=['start'])                                            # the main menu
 def start(msg):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton('Покажи новости')
@@ -39,7 +39,7 @@ def buttons(msg):
             message += f"{dot} {data['articles'][i]['title']}\n{data['articles'][i]['url']}" + '\n' * 2
         bot.reply_to(msg, message)
 
-    if msg.text == 'Покажи погоду':  # weather
+    if msg.text == 'Покажи погоду':                                                                         # weather
         bot.reply_to(msg, 'Напиши название населенного пункта')
     elif msg.text != 'Покажи новости' and \
             msg.text != 'Покажи курсы валют' and \
