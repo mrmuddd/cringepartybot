@@ -3,13 +3,13 @@ from glob import glob
 import telebot
 from telebot import types
 import requests as r
+from bs4 import BeautifulSoup
 
 KEY = '5126890620:AAEw-CztNB-4rldEnhO9MVrUfXafHZvSWVQ'
 
 bot = telebot.TeleBot(KEY)
 
-
-@bot.message_handler(commands=['start'])                            
+@bot.message_handler(commands=['start'])
 def start(msg):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     buttons = ['Обновить', 'Новости', 'Погода', 'Курсы валют', 'Хряк))))']
@@ -20,7 +20,7 @@ def start(msg):
     bot.send_message(msg.chat.id, 'Что хочешь?', reply_markup=markup)
 
 
-@bot.message_handler(content_types='text')                                               
+@bot.message_handler(content_types='text')
 def actions(msg):
     buttons = ['Обновить', 'Новости', 'Погода', 'Курсы валют', 'Хряк))))']
 
@@ -53,19 +53,33 @@ def actions(msg):
                 weatherURL = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&lang=ru&appid=2dd9ea7ad178166dee8752723832cd70"
                 weatherRESPONSE = r.get(weatherURL)
                 weatherDATA = weatherRESPONSE.json()
-                message = f"Сейчас на улице:" + '\n' * 2 \
+
+                placeURL = f"https://www.geonames.org/search.html?q={str(msg.text)}"
+                placeidRESPONSE = r.get(placeURL)
+                soup = BeautifulSoup(placeidRESPONSE.text,'html.parser')
+                ids = [link['href'] for link in soup.find_all('a', href=True)]
+                ID = ids[6][1:8]
+
+                astroURL = f"https://www.meteoblue.com/en/weather/outdoorsports/seeing/{coordDATA[0]['name'].replace(' ', '-')}_{coordDATA[0]['country']}_{ID}"
+                astro_message= 'Астрономическая видимость:' + '\n' + astroURL
+                
+                weather_message = f"Сейчас на улице:" + '\n' * 2 \
                     + f"{weatherDATA['weather'][0]['description']}" + '\n' \
                     + f"Температура: {weatherDATA['main']['temp']}" + '\n' \
                     + f"Ощущается как: {weatherDATA['main']['feels_like']}" + '\n' \
                     + f"Мин: {weatherDATA['main']['temp_min']}" + '\n' \
                     + f"Макс: {weatherDATA['main']['temp_max']}" + '\n' \
                     + f"Влажность: {weatherDATA['main']['humidity']}" '\n'
+                
                 bot.send_location(msg.chat.id, float(lat), float(lon))
-                bot.reply_to(msg, message)
+                bot.reply_to(msg,astro_message)
+                bot.reply_to(msg, weather_message)
+            else:
+                bot.reply_to(msg, 'Не знаю такого😭😭😭')
 
 # currencies
 
-    if msg.text == 'Курсы валют':                                                         
+    if msg.text == 'Курсы валют':
         GBP = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/GBP'
         EUR = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/EUR'
         USD = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/USD'
@@ -82,7 +96,7 @@ def actions(msg):
 
 # PIGGIE
 
-    if msg.text == 'Хряк))))':                                                             
+    if msg.text == 'Хряк))))':
         pigs = glob('imgs/*')
         pig = choice(pigs)
         f = open(pig, 'rb')
