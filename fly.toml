@@ -3,8 +3,8 @@
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "cringepartybot"
-primary_region = "yyz"
+app = "cringeparty"
+primary_region = "ams"
 
 [env]
   PORT = "8080"
