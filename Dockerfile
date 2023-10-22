@@ -1,15 +1,14 @@
-FROM python:3.9
+FROM python:3.8.0
 
-RUN apt-get update && apt-get install -y \
-    python3-pip \
-    python3-venv \
-    python3-dev \
-    python3-setuptools \
-    python3-wheel
+WORKDIR /bot
 
-COPY requirements.txt .
+COPY requirements.txt /bot/
 RUN pip install -r requirements.txt
+RUN apt-get update
+RUN apt-get install ffmpeg -y
+RUN apt-get install nodejs -y
+RUN apt-get install npm -y
 
-COPY . .
+COPY . /bot
 
-CMD ["python", "main.py"]
+CMD python bot.py
