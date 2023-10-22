@@ -1,6 +1,6 @@
 FROM python:3.8.0
 
-WORKDIR /bot
+WORKDIR /cringepartybot
 
 COPY requirements.txt /bot/
 RUN pip install -r requirements.txt
