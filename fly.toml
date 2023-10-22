@@ -7,7 +7,7 @@ app = "cringepartybot"
 primary_region = "yyz"
 
 [build]
-  dockerfile = “Dockerfile”
+  builder = "paketobuildpacks/builder:base"
 
 [env]
   PORT = "8080"
