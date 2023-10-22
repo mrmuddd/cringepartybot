@@ -55,20 +55,21 @@ def buttons(msg):
         coordURL = f"http://api.openweathermap.org/geo/1.0/direct?q={str(msg.text)}&limit=5&appid=2dd9ea7ad178166dee8752723832cd70"
         coordRESPONSE = r.get(coordURL)
         coordDATA = coordRESPONSE.json()
-        lat = f"{coordDATA[0]['lat']}"
-        lon = f"{coordDATA[0]['lon']}"
-        weatherURL = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&lang=ru&appid=2dd9ea7ad178166dee8752723832cd70"
-        weatherRESPONSE = r.get(weatherURL)
-        weatherDATA = weatherRESPONSE.json()
-        message = f"Сейчас на улице:" + '\n' * 2 \
+        if coordDATA!=[]:
+            lat = f"{coordDATA[0]['lat']}"
+            lon = f"{coordDATA[0]['lon']}"
+            weatherURL = f"http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&lang=ru&appid=2dd9ea7ad178166dee8752723832cd70"
+            weatherRESPONSE = r.get(weatherURL)
+            weatherDATA = weatherRESPONSE.json()
+            message = f"Сейчас на улице:" + '\n' * 2 \
                   + f"{weatherDATA['weather'][0]['description']}" + '\n' \
                   + f"Температура: {weatherDATA['main']['temp']}" + '\n' \
                   + f"Ощущается как: {weatherDATA['main']['feels_like']}" + '\n' \
                   + f"Мин: {weatherDATA['main']['temp_min']}" + '\n' \
                   + f"Макс: {weatherDATA['main']['temp_max']}" + '\n' \
-                  + f"Влажность: {weatherDATA['main']['humidity']}%" '\n'
-        bot.send_location(msg.chat.id, float(lat), float(lon))
-        bot.reply_to(msg, message)
+                  + f"Влажность: {weatherDATA['main']['humidity']}" '\n'
+            bot.send_location(msg.chat.id, float(lat), float(lon))
+            bot.reply_to(msg, message)
 
     if msg.text == 'Покажи курсы валют':                                                     # currencies
         GBP = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/GBP'
