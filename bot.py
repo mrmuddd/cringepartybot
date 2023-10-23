@@ -9,16 +9,14 @@ KEY = '5126890620:AAEw-CztNB-4rldEnhO9MVrUfXafHZvSWVQ'
 
 bot = telebot.TeleBot(KEY)
 
-buttons = ['Обновить', 'Небо над головой 🔭', 'Погода 🌦', 'Курсы валют 😭', 'Новости 💀', 'ХРЯК 🐖']
+buttons = ['Обновить', 'Небо над головой 🔭', 'Погода 🌦', 'Курсы валют 😭', 'Новости 💀', 'ХРЯК 🐖', 'КАБАН 🦍']
 @bot.message_handler(commands=['start'])
 def start(msg):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    for i in range(len(buttons)):
-        if buttons[i] == 'Небо над головой 🔭':
-            item = types.KeyboardButton(buttons[i],request_location=True)
-        else:
-            item = types.KeyboardButton(buttons[i])
-        markup.add(item)
+    markup.row('Обновить')
+    markup.row(types.KeyboardButton('Небо над головой 🔭', request_location=True), 'Погода 🌦')
+    markup.row('Курсы валют 😭', 'Новости 💀')
+    markup.row('ХРЯК 🐖', 'КАБАН 🦍')
 
     bot.send_message(msg.chat.id, 'Что хочешь?', reply_markup=markup)
 
@@ -121,6 +119,13 @@ def actions(msg):
 
     if msg.text == 'ХРЯК 🐖':
         pigs = glob('imgs/*')
+        pig = choice(pigs)
+        f = open(pig, 'rb')
+        bot.send_photo(msg.chat.id, f)
+        f.close()
+
+    if msg.text == 'КАБАН 🦍':
+        pigs = glob('cabany/*')
         pig = choice(pigs)
         f = open(pig, 'rb')
         bot.send_photo(msg.chat.id, f)
