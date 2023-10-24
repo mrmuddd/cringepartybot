@@ -96,18 +96,19 @@ def actions(msg):
         imgs = []
         dates = []
         count = 0
-        message = bot.send_message(msg.chat.id, f'Загрузка изображений: {count}/11')
+        message = bot.send_message(msg.chat.id, f'Загрузка изображений: {count}/{len(data)}')
         for i in data:
             dates.append(i['date'])
             count+=1
             imgs.append(types.InputMediaPhoto(Image.open(r.get(f"https://epic.gsfc.nasa.gov./epic-archive/jpg/{i['image']}.jpg", stream=True).raw)))
-            bot.edit_message_text(chat_id=msg.chat.id, message_id=message.message_id, text=f'Загрузка изображений: {count}/11')
+            bot.edit_message_text(chat_id=msg.chat.id, message_id=message.message_id, text=f'Загрузка изображений: {count}/{len(data)}')
         bot.delete_message(msg.chat.id, message.message_id)
         for i in range(len(dates)):
             dates[i] = f"{i+1} снимок: "+str(dates[i])
         bot.send_media_group(msg.chat.id, imgs[0:10])
-        bot.send_media_group(msg.chat.id, imgs[10:len(imgs)])
-        bot.send_message(msg.chat.id, 'Снимки сделаны спутником NASA "NOAA DSCOVR"' + '\n\n'
+        if len(imgs) > 10:
+            bot.send_media_group(msg.chat.id, imgs[10:len(imgs)])
+        bot.send_message(msg.chat.id, 'Самые свежие снимки co спутника NASA "NOAA DSCOVR"' + '\n\n'
                          + 'Дата и время (часовой пояс UTC+0): ' + f'\n\n' + '\n'.join(map(str, dates)))
 
     # currencies
