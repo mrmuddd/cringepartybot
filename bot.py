@@ -4,6 +4,7 @@ import telebot
 from telebot import types
 import requests as r
 from bs4 import BeautifulSoup as bs
+from PIL import Image
 
 KEY = '5126890620:AAEw-CztNB-4rldEnhO9MVrUfXafHZvSWVQ'
 
@@ -14,14 +15,14 @@ buttons = ['Обновить', 'Небо над головой 🔭', 'Пого�
 def start(msg):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row('Обновить')
-    markup.row(types.KeyboardButton('Небо над головой 🔭', request_location=True), 'Погода 🌦')
+    markup.row(types.KeyboardButton('Небо над головой 🔭', request_location=True), 'Погода 🌦', 'Земля от NASA 🌎')
     markup.row('Курсы валют 😭', 'Новости 💀')
     markup.row('ХРЯК 🐖', 'КАБАН 🦍')
 
     bot.send_message(msg.chat.id, 'Что хочешь?', reply_markup=markup)
 
 
-@bot.message_handler(content_types=['text','location'])
+@bot.message_handler(content_types=['text','location','InputMediaPhoto'])
 def actions(msg):
     if msg.text == 'Обновить':
         start(msg)
@@ -85,6 +86,29 @@ def actions(msg):
         weatherDATA = weatherRESPONSE.json()
         place = weatherDATA['name']
         bot.send_photo(msg.chat.id, img_data, reply_to_message_id=msg.message_id,caption=f'Небо над {place}')
+
+    #Earth pics
+
+    if msg.text == 'Земля от NASA 🌎':
+        url = 'https://api.nasa.gov/EPIC/api/natural/images?api_key=iCd9fDWK0WiK09yYma0dW5w1dNbRYjVaDx8Ho2bk'
+        response = r.get(url)
+        data = response.json()
+        imgs = []
+        dates = []
+        count = 0
+        message = bot.send_message(msg.chat.id, f'Загрузка изображений: {count}/11')
+        for i in data:
+            dates.append(i['date'])
+            count+=1
+            imgs.append(types.InputMediaPhoto(Image.open(r.get(f"https://epic.gsfc.nasa.gov./epic-archive/jpg/{i['image']}.jpg", stream=True).raw)))
+            bot.edit_message_text(chat_id=msg.chat.id, message_id=message.message_id, text=f'Загрузка изображений: {count}/11')
+        bot.delete_message(msg.chat.id, message.message_id)
+        for i in range(len(dates)):
+            dates[i] = f"{i+1} снимок: "+str(dates[i])
+        bot.send_media_group(msg.chat.id, imgs[0:10])
+        bot.send_media_group(msg.chat.id, imgs[10:len(imgs)])
+        bot.send_message(msg.chat.id, 'Снимки сделаны спутником NASA "NOAA DSCOVR"' + '\n\n'
+                         + 'Дата и время (часовой пояс UTC+0): ' + f'\n\n' + '\n'.join(map(str, dates)))
 
     # currencies
 
