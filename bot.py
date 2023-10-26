@@ -103,7 +103,7 @@ def actions(msg):
         soho_c2 = types.InputMediaVideo(soho_c2_data)
         soho = [soho_c3, soho_c2]
         bot.send_media_group(msg.chat.id, soho, reply_to_message_id=msg.message_id)
-        bot.send_photo(msg.chat.id, aurora, reply_to_message_id=msg.message_id, caption='Прогноз полярного сияния на 30 минут')
+        bot.send_photo(msg.chat.id, aurora, reply_to_message_id=msg.message_id, caption='Прогноз полярного сияния - 30 минут')
 
     #sky
 
