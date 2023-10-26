@@ -15,7 +15,7 @@ buttons = ['Обновить', 'Небо над головой 🔭', 'Пого�
 def start(msg):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     markup.row('Обновить')
-    markup.row(types.KeyboardButton('Небо над головой 🔭', request_location=True), 'Погода 🌦')
+    markup.row(types.KeyboardButton('Небо 🔭', request_location=True), 'Погода 🌦')
     markup.row('Земля 🌎', 'Солнце ☀')
     markup.row('Курсы валют 😭', 'Новости 💀')
     markup.row('ХРЯК 🐖', 'КАБАН 🦍')
@@ -90,7 +90,7 @@ def actions(msg):
         bot.send_media_group(msg.chat.id, imgs[0:10])
         if len(imgs) > 10:
             bot.send_media_group(msg.chat.id, imgs[10:len(imgs)])
-        bot.send_message(msg.chat.id, 'NOAA DSCOVR - cамые свежие снимки' + '\n\n'
+        bot.send_message(msg.chat.id, 'NOAA DSCOVR - последние снимки' + '\n\n'
                          + 'Дата и время (YYYY-MM-DD, UTC+0): ' + f'\n\n' + '\n'.join(map(str, dates)))
 
     #sun
@@ -101,7 +101,7 @@ def actions(msg):
         soho_c2_data = r.get('https://soho.nascom.nasa.gov/data/LATEST/current_c2small.mp4', stream=True).content
         bot.send_video(msg.chat.id, soho_c3_data, caption='LASCO C3')
         bot.send_video(msg.chat.id, soho_c2_data, caption='LASCO C2')
-        bot.send_photo(msg.chat.id, aurora, reply_to_message_id=msg.message_id, caption='Прогноз полярного сияния - 30 минут')
+        bot.send_photo(msg.chat.id, aurora, reply_to_message_id=msg.message_id, caption='Вероятность сияния - прогноз на 30 минут')
 
     #sky
 
@@ -120,12 +120,16 @@ def actions(msg):
         GBP = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/GBP'
         EUR = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/EUR'
         USD = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/USD'
+        RUB = 'https://v6.exchangerate-api.com/v6/b15cca4a04289cbfe1d610a2/latest/RUB'
         dataGBP = r.get(GBP).json()
         dataEUR = r.get(EUR).json()
         dataUSD = r.get(USD).json()
+        dataRUB = r.get(RUB).json()
         rep = f"1 USD = {dataUSD['conversion_rates']['RUB']} RUB" + '\n' \
               f"1 EUR = {dataEUR['conversion_rates']['RUB']} RUB" + '\n' \
-              f"1 GBP = {dataGBP['conversion_rates']['RUB']} RUB"
+              f"1 GBP = {dataGBP['conversion_rates']['RUB']} RUB" + '\n' \
+              f"1 RUB = {dataRUB['conversion_rates']['KRW']} KRW" + '\n' \
+              f"1 RUB = {dataRUB['conversion_rates']['MNT']} MNT"
         bot.reply_to(msg, rep)
 
     # news
