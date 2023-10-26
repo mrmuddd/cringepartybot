@@ -112,11 +112,17 @@ def actions(msg):
     if msg.location is not None:
         lat = msg.location.latitude
         lon = msg.location.longitude
-        img = r.get(f'https://www.heavens-above.com/wholeskychart.ashx?lat={str(lat)}&lng={str(lon)}&loc=Unspecified&alt=0&tz=UCT&size=800&SL=1&SN=1&BW=0&time=60243.34231&ecl=0&cb=0').content
-        weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={str(lat)}&lon={str(lon)}&units=metric&lang=ru&appid=2dd9ea7ad178166dee8752723832cd70"
-        weather_data = r.get(weather_url).json()
-        place = weather_data['name']
-        bot.send_photo(msg.chat.id, img, reply_to_message_id=msg.message_id,caption=f'Небо над {place}')
+        url = f'https://www.heavens-above.com/SkyChart.aspx?lat={str(lat)}&lng={str(lon)}&loc=Unspecified&alt=0&tz=UCT'
+        skyRESPONSE = r.get(url)
+        soup = bs(skyRESPONSE.content, 'html.parser')
+        image_soup = soup.select('img[id=ctl00_cph1_imgSkyChart]')
+        image_url = image_soup[0]['src']
+        img_data = r.get(f'https://www.heavens-above.com/{image_url}').content
+        weatherURL = f"http://api.openweathermap.org/data/2.5/weather?lat={str(lat)}&lon={str(lon)}&units=metric&lang=ru&appid=2dd9ea7ad178166dee8752723832cd70"
+        weatherRESPONSE = r.get(weatherURL)
+        weatherDATA = weatherRESPONSE.json()
+        place = weatherDATA['name']
+        bot.send_photo(msg.chat.id, img_data, reply_to_message_id=msg.message_id,caption=f'Небо над {place}')
 
     # currencies
 
