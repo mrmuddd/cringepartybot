@@ -97,7 +97,7 @@ def actions(msg):
 
     if msg.text == 'Солнце ☀':
         aurora = r.get('https://services.swpc.noaa.gov/images/aurora-forecast-northern-hemisphere.jpg').content
-         bot.send_photo(msg.chat.id, aurora, reply_to_message_id=msg.message_id,
+        bot.send_photo(msg.chat.id, aurora, reply_to_message_id=msg.message_id,
                        caption='Вероятность сияния - прогноз на 30 минут')
         message = bot.send_message(msg.chat.id, 'Загрузка видео: 0/2')
         soho_c3_data = r.get('https://soho.nascom.nasa.gov/data/LATEST/current_c3small.mp4', stream=True).content
