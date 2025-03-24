@@ -86,9 +86,7 @@ def actions(msg):
             y = str(i['date'])[0:4]
             m = str(i['date'])[5:7]
             d = str(i['date'])[8:10]
-            print(y,m,d)
             img = r.get(f"https://api.nasa.gov/EPIC/archive/natural/{y}/{m}/{d}/jpg/{i['image']}.jpg?api_key={nasakey}").content
-            print(img)
             imgs.append(types.InputMediaPhoto(img))
             bot.edit_message_text(f'Загрузка изображений: {count}/{len(data)}', msg.chat.id, message.message_id)
 
